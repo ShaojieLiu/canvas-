@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>作业 0</title>
+        <style>
+            canvas {
+                /*border: 1px dashed lightskyblue;*/
+            }
+        </style>
+        <link rel="stylesheet" href="css/index.css">
+        <!-- 引入所有用到的文件 -->
+        <script src='utils/gua_utils.js'></script>
+
+        <link href="http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+        <script src='gua_canvasBase/gua_object.js'></script>
+        <script src='gua_canvasBase/gua_point.js'></script>
+        <script src='gua_canvasBase/gua_size.js'></script>
+        <script src='gua_canvasBase/gua_color.js'></script>
+        <script src='gua_canvasBase/gua_canvas.js'></script>
+
+        <script src='gua_tool/gua_toolBox.js'></script>
+        <script src='gua_tool/gua_tool.js'></script>
+
+        <script src='gua_element/gua_element.js'></script>
+        <script src='gua_element/gua_rect.js'></script>
+        <script src='gua_element/gua_button.js'></script>
+        <script src='gua_element/gua_path.js'></script>
+
+        <script src='gua_canvasBase/gua_canvasCtrl.js'></script>
+
+    </head>
+    <body>
+    <div class="main">
+        <div class='toolBox'>
+        </div>
+        <div id="canvasBox" class="canvasBox">
+            <canvas id="id-canvas" width="400" height="600"></canvas>
+        </div>
+
+    </div>
+
+<script>
+// 函数名应该用 const 修饰, 这样不会被意外修改
+//const test0 = () => {
+//    let canvas = GuaCanvas.new('#id-canvas')
+//    // 这是一个测试函数, 给你看原理的, 只是看看
+//    canvas.__debug_draw_demo()
+//    // 画一条线
+//    let p1 = GuaPoint.new(0, 0)
+//    let p2 = GuaPoint.new(255, 128)
+//    canvas.drawLine(p1, p2, GuaColor.black())
+//    canvas.drawRect(p1, {w: 50, h: 50}, GuaColor.red())
+//    // 渲染出来, 不调用这个函数就不会显示结果
+//    canvas.render()
+//}
+//
+const test1 = (stage) => {
+    stage.listenMouse() // sets of normal tools
+}
+//
+//const test2 = (stage) => {
+//    //
+//    let v = GuaButton.new()
+//    v.position = GuaPoint.new(100, 100)
+//    v.size = GuaSize.new(100, 100)
+//    v.addAction(function(event){
+//        log('clicked 按钮')
+////        log(event)
+//    })
+//    stage.addElement(v)
+//    //
+//    stage.render()
+//}
+
+const __main = function() {
+    GuaToolBox.new()
+//    const div = document.querySelector('#canvasBox')
+    const stage = GuaCanvasCtrl.new("#id-canvas")
+//    test0() // 画线段 和 矩形 功能
+    test1(stage) // 鼠标划线功能 和 鼠标画出矩形框功能
+//    test2(stage) // 添加一个可绑定事件的按钮
+}
+
+__main()
+</script>
+    </body>
+</html>

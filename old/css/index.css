@@ -1,0 +1,53 @@
+body, html{
+    margin: 0;
+    padding: 0;
+}
+
+.main{
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background-color: #666;
+    padding: 20px;
+}
+
+.main > div{
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px black;
+}
+
+.toolBox{
+    margin: 0 30px 0 0;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background-color: #eee;
+}
+
+.toolBtn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid gray;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px gray;
+    flex-direction: column;
+}
+
+.radius{
+    border-radius: 5px;
+}
+
+.toolBtn+.toolBtn{
+    margin-top: 5px;
+}
+
+.canvasBox{
+    background-color: #fff;
+}
+
+.active{
+    background-color: lightskyblue;
+}
