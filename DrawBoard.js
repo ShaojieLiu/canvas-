@@ -21,9 +21,13 @@ class DrawBoard {
     }
 
     _initState(opt) {
+        {
+            this.eraser = {}
+            let {type, w, h, ico} = opt.eraser
+            Object.assign(this.eraser, {type, w, h, ico})
+        }
+
         this.penSize = opt.pen.size
-        this.eraserSize = opt.eraser.w
-        this.eraserIco = opt.eraser.ico
         this.maxStack = opt.maxStack
         
         this.tool = 'pen' // 'eraser' 'no'
@@ -37,37 +41,23 @@ class DrawBoard {
     }
 
     _initBind() {
-        this._mousedown = this._mousedown.bind(this)
-        this._mousemove = this._mousemove.bind(this)
-        this._mouseup = this._mouseup.bind(this)
-
-        this.canvas.addEventListener('mousedown', this._mousedown)
-        this.canvas.addEventListener('mousemove', this._mousemove)
-        this.canvas.addEventListener('mouseup', this._mouseup)
+        this.canvas.addEventListener('mousedown', this._mousedown.bind(this))
+        this.canvas.addEventListener('mousemove', this._mousemove.bind(this))
+        this.canvas.addEventListener('mouseup', this._mouseup.bind(this))
         this.canvas.addEventListener('mouseleave', () => this.isDown = false)
     }
 
     _mousedown(ev) {
         this.isDown = true
         this._save()
-        console.log('_mousedown', ev)
 
         let x = ev.offsetX
         let y = ev.offsetY
         this.last = {x, y}
-
-        let func = {
-            'pen': () => {},
-            'eraser': () => {},
-            'no': () => {},
-        }[this.tool]
-
-        func()
     }
 
     _mousemove(ev) {
         if (!this.isDown) {return}
-        console.log('_mousemove')
 
         let x = ev.offsetX
         let y = ev.offsetY
@@ -84,7 +74,7 @@ class DrawBoard {
         }[this.tool]
 
         func()
-        this.last = {x, y}
+        this.last = p
     }
 
     _mouseup() {
@@ -101,6 +91,32 @@ class DrawBoard {
         ctx.stroke()
     }
 
+    _maxDis(last, p) {
+        let xSub = p.x - last.x
+        let ySub = p.y - last.y
+        let x = Math.abs(xSub)
+        let y = Math.abs(ySub)
+        return {
+            max: x > y ? x : y,
+            xSub,
+            ySub,
+        }
+    }
+
+    _rectTo(last, p, color, w, h) {
+        let {ctx} = this
+        let {max, xSub, ySub} = this._maxDis(last, p)
+
+        ctx.fillStyle = color
+        for (let i = 0; i < max; i ++) {
+            let ratio = i / max
+            let x = last.x + ratio * xSub
+            let y = last.y + ratio * ySub
+            ctx.rect(x - w / 2, y - h / 2, w, h)
+        }
+        ctx.fill()
+    }
+
     _draw(last, p) {
         let {ctx, color, penSize} = this
         ctx.globalCompositeOperation = 'source-over'
@@ -108,16 +124,25 @@ class DrawBoard {
     }
 
     _eraser(last, p) {
-        let {ctx, eraserSize} = this
+        let {ctx, eraser} = this
+        let {type, w, h} = eraser
         ctx.globalCompositeOperation = 'destination-out'
-        this._lineTo(last, p, '#00ff00', eraserSize)
+
+        let func = {
+            'circle': () => this._lineTo(last, p, 'white', w),
+            'rectangle': () => this._rectTo(last, p, 'white', w, h),
+        }[type]
+
+        func()
     }
 
     setTool(tool) {
         if (-1 === ['pen', 'eraser', 'no'].indexOf(tool)) {return -1}
         if (tool === 'eraser') {
-            console.log('er')
-            this.canvas.style.cursor = `url(${this.eraserIco}), auto`
+            let {ico, w, h} = this.eraser
+            this.canvas.style.cursor = `url(${ico}) ${w / 2} ${h / 2}, auto`
+        } else {
+            this.canvas.style.cursor = 'auto'
         }
         this.tool = tool
     }
@@ -138,8 +163,8 @@ class DrawBoard {
     undo() {
         let {ctx, w, h, history} = this
         if (history.length === 0) {
-            console.log('no more stack')
-            return
+            console.warn('no more stack')
+            return -1
         }
         ctx.clearRect(0, 0, w, h)
         ctx.putImageData(history.pop(), 0, 0)
