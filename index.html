@@ -4,19 +4,24 @@
     <meta charset="UTF-8">
     <title>canvasDrawTest</title>
     <style>
-        #canvas-box-draw{
-            /*cursor: url(all-scroll.gif), auto;*/
+        #test-box button{
+            width: 400px;
+            text-align: left;
         }
     </style>
 </head>
 <body>
-<div id="canvas-box" style="width: 400px; height: 400px; background-color: #5D809E"></div>
+<div id="canvas-box" style="width: 400px; height: 300px; background-color: #5D809E"></div>
+<span id="test-box"></span>
 
 <script src="DrawBoard.js"></script>
 <script>
-var test = function() {
+var interfaceTest = function() {
     [
         'drawBoard.ctx.fillRect(0, 0, 300, 300)',
+        'drawBoard.eraser.type = "circle"',
+        'drawBoard.eraser.type = "rectangle"',
+        '\n以上用法仅为方便测试, 非接口\n\n',
         'drawBoard.setTool("pen")',
         'drawBoard.setTool("eraser")',
         'drawBoard.setColor("blue")',
@@ -27,12 +32,12 @@ var test = function() {
         var btn = document.createElement('button')
         btn.innerText = code
         btn.style.display = 'block'
-        btn.addEventListener('click', () => eval(code))
-        document.querySelector('body').appendChild(btn)
+        btn.addEventListener('click', () => code[0] !== '\n' && eval(code))
+        document.querySelector('#test-box').appendChild(btn)
     })
 }
 
-var __main = function() {
+var use = function() {
     var moveIco = 'data:img/jpg;base64,R0lGODlhGgAaAIAAAP8AAP//gCH5BAAAAAAALAAAAAAaABoAAAI5jI+py+0PIYgPWMqsxkl7Dobg5JClGWzH1ajpZ7id65mwQt8yjspsWREJh5kailMj7kRHovMJDRUAADs='
     var div = document.querySelector('#canvas-box')
 	window.drawBoard = new DrawBoard(div)
@@ -42,16 +47,22 @@ var __main = function() {
         },
         eraser: {
             ico: moveIco,
-            w: 28, // 这个尺寸配合所给的ico
-            h: 28,
+            w: 32, // 这个尺寸配合所给的ico
+            h: 32,
+            offsetX: 13,
+            offsetY: 13,
             type: 'rectangle', //'rectangle', 'circle'
         },
         maxStack: 5,
 	})
 }
 
+var __main = function() {
+    use()
+    interfaceTest()
+}
+
 __main()
-test()
 
 </script>
 

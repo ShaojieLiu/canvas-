@@ -23,8 +23,8 @@ class DrawBoard {
     _initState(opt) {
         {
             this.eraser = {}
-            let {type, w, h, ico} = opt.eraser
-            Object.assign(this.eraser, {type, w, h, ico})
+            let {type, w, h, offsetX, offsetY, ico} = opt.eraser
+            Object.assign(this.eraser, {type, w, h, ico, offsetX, offsetY})
         }
 
         this.penSize = opt.pen.size
@@ -44,16 +44,13 @@ class DrawBoard {
         this.canvas.addEventListener('mousedown', this._mousedown.bind(this))
         this.canvas.addEventListener('mousemove', this._mousemove.bind(this))
         this.canvas.addEventListener('mouseup', this._mouseup.bind(this))
-        this.canvas.addEventListener('mouseleave', () => this.isDown = false)
+        this.canvas.addEventListener('mouseleave', this._mouseup.bind(this))
     }
 
     _mousedown(ev) {
         this.isDown = true
         this._save()
-
-        let x = ev.offsetX
-        let y = ev.offsetY
-        this.last = {x, y}
+        this._mousemove(ev)
     }
 
     _mousemove(ev) {
@@ -65,10 +62,10 @@ class DrawBoard {
 
         let func = {
             'pen': () => {
-                this._draw(this.last, p)
+                this._draw(this.last || p, p)
             },
             'eraser': () => {
-                this._eraser(this.last, p)
+                this._eraser(this.last || p, p)
             },
             'no': () => {},
         }[this.tool]
@@ -79,11 +76,13 @@ class DrawBoard {
 
     _mouseup() {
         this.isDown = false
+        this.last = null
     }
 
     _lineTo(last, p, color, width=1) {
         let {ctx} = this
         ctx.strokeStyle = color
+        ctx.fillStyle = color
         ctx.lineWidth = width
         ctx.beginPath()
         ctx.moveTo(last.x, last.y)
@@ -97,7 +96,7 @@ class DrawBoard {
         let x = Math.abs(xSub)
         let y = Math.abs(ySub)
         return {
-            max: x > y ? x : y,
+            max: x > y ? x : y || 1,
             xSub,
             ySub,
         }
@@ -139,8 +138,8 @@ class DrawBoard {
     setTool(tool) {
         if (-1 === ['pen', 'eraser', 'no'].indexOf(tool)) {return -1}
         if (tool === 'eraser') {
-            let {ico, w, h} = this.eraser
-            this.canvas.style.cursor = `url(${ico}) ${w / 2} ${h / 2}, auto`
+            let {ico, offsetX, offsetY} = this.eraser
+            this.canvas.style.cursor = `url(${ico}) ${offsetX} ${offsetY}, auto`
         } else {
             this.canvas.style.cursor = 'auto'
         }
