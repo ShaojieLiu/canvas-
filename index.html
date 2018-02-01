@@ -12,9 +12,11 @@
 </head>
 <body>
 <div id="canvas-box" style="width: 400px; height: 300px; background-color: #5D809E"></div>
+<!--<div id="canvas-box2" style="width: 400px; height: 300px; background-color: #5D809E"></div>-->
 <span id="test-box"></span>
 
 <script src="DrawBoard.js"></script>
+<script src="canvasAdapteDPR.js"></script>
 <script>
 var interfaceTest = function() {
     [
@@ -39,22 +41,27 @@ var interfaceTest = function() {
 
 var use = function() {
     var moveIco = 'data:img/jpg;base64,R0lGODlhGgAaAIAAAP8AAP//gCH5BAAAAAAALAAAAAAaABoAAAI5jI+py+0PIYgPWMqsxkl7Dobg5JClGWzH1ajpZ7id65mwQt8yjspsWREJh5kailMj7kRHovMJDRUAADs='
-    var div = document.querySelector('#canvas-box')
+    var param = {
+	    pen: {
+		    size: 5,
+	    },
+	    eraser: {
+		    ico: moveIco,
+		    w: 26, // 这个尺寸配合所给的ico
+		    h: 26,
+		    offsetX: 13,
+		    offsetY: 13,
+		    type: 'rectangle', //'rectangle', 'circle'
+	    },
+	    maxStack: 5,
+    }
+	var div = document.querySelector('#canvas-box')
 	window.drawBoard = new DrawBoard(div)
-	drawBoard.init({
-        pen: {
-        	size: 5,
-        },
-        eraser: {
-            ico: moveIco,
-            w: 32, // 这个尺寸配合所给的ico
-            h: 32,
-            offsetX: 13,
-            offsetY: 13,
-            type: 'rectangle', //'rectangle', 'circle'
-        },
-        maxStack: 5,
-	})
+	drawBoard.init(param)
+
+//	var div2 = document.querySelector('#canvas-box2') // 用于对比dpr模式关闭
+//	window.drawBoard2 = new DrawBoard(div2, false)
+//	drawBoard2.init(param)
 }
 
 var __main = function() {
